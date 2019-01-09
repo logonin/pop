@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+    <meta charset="utf-8">
+    <link href="http://www.jq22.com/jquery/bootstrap-3.3.4.css" rel="stylesheet">
+</head>
+<body style="height: 100%; margin: 0">
+
+<form class="form-inline">
+    <div data-toggle="distpicker">
+        <div class="form-group">
+            <span>请选择所在省、市、县/区：</span>
+            <select class="form-control" id="province" name="province">
+                <option value="0" selected="selected">-- 请选择 --</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <select class="form-control" id="city" name="city">
+                <option value="0" selected="selected">-- 请选择 --</option>
+            </select>
+        </div>
+        <!-- <div class="form-group">
+             <select class="form-control" id="district" name="district">
+                 <option value="0" selected="selected">&#45;&#45; 请选择 &#45;&#45;</option>
+             </select>
+         </div>-->
+    </div>
+</form>
+
+<div id="container" style="height: 100%"></div>
+<script src="/population/echarts.min.js"></script>
+<!-- 引入 vintage 主题 -->
+<script src="/population/macarons.js"></script>
+<script src="/assets/js/jquery-1.4.4.min.js"></script>
+
+<script>
+
+    var xAxis = "#(xAxis)";
+    var yAxis = "#(yAxis)";
+    var dom = document.getElementById("container");
+    var myChart = echarts.init(dom);
+    window.onresize = myChart.resize;
+    var app = {};
+    app.title = '中国人口总量 - 条形图 (万人)';
+    //方式一
+    //加载省份数据
+    $(function () {
+        $.ajax({
+            type: "post",
+            url: "getProvince",
+            success: function (result) {
+                $('#province option').remove();
+                $('#province').append("<option value='0' selected='selected'>-- 请选择 --</option>");
+                for (var i in result) {
+                    $('#province').append("<option value='" + result[i].area_id + "'>" + result[i].area_name + "</option>")
+                }
+            }
+        });
+    });
+    var xAxis_city = new Array();
+    var yAxis_city = new Array();
+    //给省份下拉列表添加监听事件，监听选择项，生成市列表
+    $(function () {
+        $('#province').change(function () {
+            $.ajax({
+                type: "post",
+                url: "getCity?pid=" + $(this).val(),
+                success: function (result) {
+                    $('#city option').remove();
+                    $('#city').append("<option value='0' selected='selected'>-- 请选择 --</option>");
+                    for (var i in result) {
+                        $('#city').append("<option value='" + result[i].area_id + "'>" + result[i].area_name + "</option>")
+                        xAxis_city[i] = result[i].population;
+                        yAxis_city[i] = result[i].area_name;
+                    }
+                    // myChart.clear();
+                    echarts.init(dom);
+                    option = {
+                        title: {
+                            text: '2018年中国人口总量',
+                            subtext: '数据来自民政部'
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'shadow'
+                            }
+                        },
+                        toolbox: {
+                            show: true,
+                            feature: {
+                                dataView: {show: true, readOnly: false},
+                                magicType: {show: true, type: ['line', 'bar', 'pie']},
+                                saveAsImage: {show: true}
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis: {
+                            type: 'value',
+                            boundaryGap: [0, 0.01]
+                        },
+                        yAxis: {
+                            type: 'category',
+                            data: yAxis_city
+                        },
+                        series: [
+                            {
+                                name: '人口总数（万人）',
+                                type: 'bar',
+                                itemStyle: {normal: {label: {show: true, position: 'insideRight'}}},
+                                color: '#ff7e24',
+                                data: xAxis_city
+                            }
+                        ]
+                    };
+                    ;
+                    if (option && typeof option === "object") {
+                        myChart.setOption(option, true);
+                    }
+                }
+            });
+        });
+    });
+    var xAxis_district = new Array();
+    var yAxis_district = new Array();
+    //给市下拉列表添加监听事件，监听选择项，生成区县列表
+    $(function () {
+        $('#city').change(function () {
+            $.ajax({
+                type: "post",
+                url: "getDistrict?cid=" + $(this).val(),
+                success: function (result) {
+                    $('#district option').remove();
+                    $('#district').append("<option value='0' selected='selected'>-- 请选择 --</option>");
+                    for (var i in result) {
+                        $('#district').append("<option value='" + result[i].area_id + "'>" + result[i].area_name + "</option>")
+                        xAxis_district[i] = result[i].population;
+                        yAxis_district[i] = result[i].area_name;
+                    }
+                    myChart.clear();
+                    echarts.init(dom);
+                    option = {
+                        title: {
+                            text: '2018年中国人口总量',
+                            subtext: '数据来自民政部'
+                        },
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'shadow'
+                            }
+                        },
+                        toolbox: {
+                            show: true,
+                            feature: {
+                                dataView: {show: true, readOnly: false},
+                                magicType: {show: true, type: ['line', 'bar', 'pie']},
+                                saveAsImage: {show: true}
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis: {
+                            type: 'value',
+                            boundaryGap: [0, 0.01]
+                        },
+                        yAxis: {
+                            type: 'category',
+                            data: yAxis_district
+                        },
+                        series: [
+                            {
+                                name: '人口总数（万人）',
+                                type: 'bar',
+                                itemStyle: {normal: {label: {show: true, position: 'insideRight'}}},
+                                color: '#ff6557',
+                                data: xAxis_district
+                            }
+                        ]
+                    };
+                    ;
+                    if (option && typeof option === "object") {
+                        myChart.setOption(option, true);
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+<script type="text/javascript">
+
+    option = {
+        title: {
+            text: '2018年中国人口总量',
+            subtext: '数据来自民政部'
+        },
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'shadow'
+            }
+        },
+        toolbox: {
+            show: true,
+            feature: {
+                dataView: {show: true, readOnly: false},
+                magicType: {show: true, type: ['line', 'bar', 'pie']},
+                saveAsImage: {show: true}
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+           // height: '130%',
+            containLabel: true
+        },
+        xAxis: {
+            type: 'value',
+            boundaryGap: [0, 0.01]
+        },
+        yAxis: {
+            type: 'category',
+            data: yAxis.split(",")
+        },
+        series: [
+            {
+                name: '人口总数（万人）',
+                type: 'bar',
+                itemStyle: {normal: {label: {show: true, position: 'insideRight'}}},
+                data: xAxis.split(",")
+            }
+        ]
+    };
+    ;
+    if (option && typeof option === "object") {
+        myChart.setOption(option, true);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="pop:war exploded">
+    <output-path>D:/tools/apache-tomcat-7.0.40/webapps/population</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="pop" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="Maven: com.jfinal:jfinal-undertow:1.3" />
+          <element id="library" level="project" name="Maven: org.jboss.logging:jboss-logging:3.3.2.Final" />
+          <element id="library" level="project" name="Maven: org.jboss.xnio:xnio-api:3.3.8.Final" />
+          <element id="library" level="project" name="Maven: org.jboss.xnio:xnio-nio:3.3.8.Final" />
+          <element id="library" level="project" name="Maven: com.jfinal:jfinal:3.5" />
+          <element id="library" level="project" name="Maven: cglib:cglib-nodep:3.2.5" />
+          <element id="library" level="project" name="Maven: org.slf4j:slf4j-nop:1.7.25" />
+          <element id="library" level="project" name="Maven: org.slf4j:slf4j-api:1.7.25" />
+          <element id="library" level="project" name="Maven: log4j:log4j:1.2.16" />
+          <element id="library" level="project" name="Maven: mysql:mysql-connector-java:5.1.44" />
+          <element id="library" level="project" name="Maven: com.alibaba:druid:1.0.29" />
+          <element id="library" level="module" name="Maven: com.alibaba:jconsole:1.8.0" module-name="pop" />
+          <element id="library" level="module" name="Maven: com.alibaba:tools:1.8.0" module-name="pop" />
+          <element id="library" level="project" name="Maven: com.jfinal:cos:2017.5" />
+          <element id="library" level="project" name="Maven: com.alibaba:fastjson:1.2.51" />
+        </element>
+      </element>
+      <element id="javaee-facet-resources" facet="pop/web/Web" />
+    </root>
+  </artifact>
+</component>

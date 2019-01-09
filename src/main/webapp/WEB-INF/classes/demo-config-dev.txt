@@ -1,0 +1,5 @@
+# config
+jdbcUrl = jdbc:mysql://10.1.9.99:3305/myinsure?characterEncoding=utf8&useSSL=false&zeroDateTimeBehavior=convertToNull
+user = root
+password = root
+devMode = true
